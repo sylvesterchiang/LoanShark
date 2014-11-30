@@ -49,6 +49,11 @@
             android:label="@string/title_activity_signup"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".PostActivity"
+            android:label="@string/title_activity_signup"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>

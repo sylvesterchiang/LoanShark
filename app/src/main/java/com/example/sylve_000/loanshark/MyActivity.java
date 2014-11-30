@@ -1,9 +1,11 @@
 package com.example.sylve_000.loanshark;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.view.View;
@@ -13,19 +15,18 @@ import com.parse.Parse;
 
 public class MyActivity extends Activity {
 
-    private EditText mTaskInput;
-    private ListView mListView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
 
-        Parse.initialize(this, "ubmj6oAAyAAD7ARhLkuaTiOkvEpbqjWhi13NEIia", "R7xHxk1EAS24kVUiGuxzJDHTASRI6MXyWBGl7Wnk");
-        ParseObject.registerSubclass(Task.class);
-
-        mTaskInput = (EditText) findViewById(R.id.task_input);
-        mListView = (ListView) findViewById(R.id.task_list);
+        Button addFriend = (Button) findViewById(R.id.add_friend);
+        addFriend.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                Intent intent = new Intent(MyActivity.this, PostActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -45,15 +46,5 @@ public class MyActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void createTask(View v) {
-        if (mTaskInput.getText().length() > 0){
-            Task t = new Task();
-            t.setDescription(mTaskInput.getText().toString());
-            t.setCompleted(false);
-            //t.saveEventually();
-            mTaskInput.setText("");
-        }
     }
 }
