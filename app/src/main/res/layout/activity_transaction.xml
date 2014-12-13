@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ListView
+        android:id="@+id/listTransactions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></ListView>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"></RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:id="@+id/relativeLayout3">
+
+    <EditText
+        android:id="@+id/loanAmount"
+        android:hint="Whatchu wanna do"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_below="@+id/relativeLayout3"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+    <Button
+        android:id="@+id/issueLoanButton"
+        android:layout_width="120dp"
+        android:layout_margin="10dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"/>
+
+    <Button
+        android:id="@+id/receiveLoanButton"
+        android:layout_width="120dp"
+        android:layout_margin="10dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>
