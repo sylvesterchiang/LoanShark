@@ -38,6 +38,7 @@
             android:layout_below="@+id/loanee">
 
             <TextView
+                android:layout_alignParentRight="true"
                 android:id="@+id/amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
