@@ -11,6 +11,14 @@ import com.parse.ParseClassName;
 @ParseClassName("Friends")
 public class Friends extends ParseObject{
 
+    public double getAmount(){
+        return getDouble("amount");
+    }
+
+    public void setAmount(double amount){
+        put("amount", amount);
+    }
+
     public String getFirstName(){
         return getString("firstName");
     }

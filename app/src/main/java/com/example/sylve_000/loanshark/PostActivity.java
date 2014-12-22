@@ -50,9 +50,8 @@ public class PostActivity extends Activity {
         post.setFirstName(firstName);
         post.setLastName(lastName);
         post.setUser(ParseUser.getCurrentUser());
-        ParseACL acl = new ParseACL();
-
-        acl.setPublicReadAccess(true);
+        post.setAmount(0);
+        ParseACL acl = new ParseACL(ParseUser.getCurrentUser());
         post.setACL(acl);
 
         post.saveInBackground(new SaveCallback(){

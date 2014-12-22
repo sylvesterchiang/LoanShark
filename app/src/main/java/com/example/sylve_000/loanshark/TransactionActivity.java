@@ -10,15 +10,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.util.Log;
 
+import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseACL;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  * Created by sylve_000 on 2014-12-11.
@@ -30,7 +35,9 @@ public class TransactionActivity extends Activity{
     private ListView transactionList;
     private EditText amountField;
     private ParseQueryAdapter <Transaction> postsQueryAdapter;
-    public double sum = 0;
+    ParseQuery<Friends> friendQuery;
+    public double sum;
+    private TextView sumText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +52,8 @@ public class TransactionActivity extends Activity{
         transactionList = (ListView) findViewById(R.id.listTransactions);
 
         amountField = (EditText) findViewById(R.id.loanAmount);
+
+        sumText = (TextView) findViewById(R.id.sum);
 
         findViewById(R.id.issueLoanButton).setOnClickListener(new View.OnClickListener(){
             @Override
@@ -77,12 +86,18 @@ public class TransactionActivity extends Activity{
                 if (view == null) {
                     if (post.getType() == false){
                         view = View.inflate(getContext(), R.layout.message_left, null);
-                        sum = sum + post.getAmount();
                     }
                     else{
                         view = View.inflate(getContext(), R.layout.message_right, null);
-                        sum -= post.getAmount();
                     }
+                }
+                if (post.getType() == false){
+                    sum += post.getAmount();
+                    Log.w(post.getAmount()+"", "TESTING");
+                }
+                else{
+                    sum -= post.getAmount();
+                    Log.w(post.getAmount()+"", "TESTING");
                 }
                 //TextView usernameView = (TextView) view.findViewById(R.id.username_view);
                 //usernameView.setText(post.getFirstName() + " " + post.getLastName());
@@ -92,7 +107,6 @@ public class TransactionActivity extends Activity{
 
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                 dateView.setText(df.format(post.getCreatedAt()));
-                sum += post.getAmount();
                 amountView.setText(post.getAmount()+"");
 
                 return view;
@@ -101,9 +115,42 @@ public class TransactionActivity extends Activity{
 
         ListView transactionList = (ListView) findViewById(R.id.listTransactions);
         transactionList.setAdapter(postsQueryAdapter);
+        updateSum();
+    }
 
-        TextView sumText = (TextView) findViewById(R.id.sum);
-        sumText.setText("$ " + sum);
+    private void updateSum(){
+        friendQuery = Friends.getQuery();
+        friendQuery.whereEqualTo("objectId", friendID);
+        friendQuery.findInBackground(new FindCallback<Friends>() {
+            public void done(List<Friends> objects, ParseException e) {
+                if (e == null){
+                    Log.w("" + objects.size(), "LIST SIZE");
+                    sum = objects.get(0).getAmount();
+                    sumText.setText("$" + sum);
+                }else{
+                    //something
+                }
+            }
+        });
+    }
+
+    private void changeSum(boolean type, double value){
+        ParseObject point = ParseObject.createWithoutData("Friends", friendID);
+        if (type == false){
+            point.put("amount", sum + value);
+        }else{
+            point.put("amount", sum - value);
+        }
+
+        point.saveInBackground(new SaveCallback(){
+            public void done(ParseException e){
+                if (e == null){
+                    //saved succesfully
+                }else{
+                    //error
+                }
+            }
+        });
     }
 
     private void issueLoan(){
@@ -113,23 +160,23 @@ public class TransactionActivity extends Activity{
 
         Transaction post = new Transaction();
 
-        double amount = Double.parseDouble(amountField.getText().toString());
+        final double amount = Double.parseDouble(amountField.getText().toString());
+
+        changeSum(false, amount);
 
         post.setAmount(amount);
         post.setType(false);
         post.setFriend(friendID);
         post.setUser(ParseUser.getCurrentUser());
 
-        ParseACL acl = new ParseACL();
-
-        acl.setPublicReadAccess(true);
+        ParseACL acl = new ParseACL(ParseUser.getCurrentUser());
         post.setACL(acl);
 
         post.saveInBackground(new SaveCallback(){
             @Override
             public void done(ParseException e){
                 dialog.dismiss();
-                finish();
+                //finish();
             }
         });
     }
@@ -141,23 +188,23 @@ public class TransactionActivity extends Activity{
 
         Transaction post = new Transaction();
 
-        double amount = Double.parseDouble(amountField.getText().toString());
+        final double amount = Double.parseDouble(amountField.getText().toString());
+
+        changeSum(true, amount);
 
         post.setAmount(amount);
         post.setType(true);
         post.setFriend(friendID);
         post.setUser(ParseUser.getCurrentUser());
 
-        ParseACL acl = new ParseACL();
-
-        acl.setPublicReadAccess(true);
+        ParseACL acl = new ParseACL(ParseUser.getCurrentUser());
         post.setACL(acl);
 
         post.saveInBackground(new SaveCallback(){
             @Override
             public void done(ParseException e){
                 dialog.dismiss();
-                finish();
+                //finish();
             }
         });
     }
